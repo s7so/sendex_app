@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1077831778465",
+    "project_id": "sendex-app-project",
+    "storage_bucket": "sendex-app-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077831778465:android:524805e5350ebfefb9b0e0",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZE21h1Ajp7h8rvDSt_Jo6bypW6xJSA_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
