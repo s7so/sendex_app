@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart'; // استورد خدمة التسجيل
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -12,6 +14,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final fullNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final emailController = TextEditingController();
+  final AuthService _authService = AuthService(); // instance من خدمة التسجيل
 
   @override
   Widget build(BuildContext context) {
@@ -64,15 +67,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               SizedBox(height: 30), // مسافة رأسية أكبر شوية قبل الزر
 
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  // خلي الدالة async عشان نستدعي خدمة التسجيل الـ asynchronous
                   if (_formKey.currentState!.validate()) {
-                    // هنا هيتم تنفيذ عملية التسجيل لما الزر يداس
                     String fullName = fullNameController.text;
                     String phoneNumber = phoneNumberController.text;
                     String email = emailController.text;
-                    print(
-                        'الاسم الكامل: $fullName, رقم الهاتف: $phoneNumber, البريد الإلكتروني: $email');
-                    // المفروض هنا تستدعي خدمة التسجيل وترسل البيانات دي
+
+                    // استدعاء خدمة التسجيل
+                    User? registeredUser = await _authService.registerUser(
+                      fullName: fullName,
+                      phoneNumber: phoneNumber,
+                      email: email,
+                    );
+
+                    if (registeredUser != null) {
+                      // تم التسجيل بنجاح
+                      print(
+                          'تم التسجيل بنجاح: ${registeredUser.email}'); // طباعة رسالة نجاح في الـ Console
+                      // **هنا ممكن تروح للشاشة اللي بعد التسجيل (مثلاً شاشة التحقق من OTP)**
+                    } else {
+                      // فشل التسجيل
+                      print('فشل التسجيل'); // طباعة رسالة فشل في الـ Console
+                      // **هنا ممكن تعرض رسالة خطأ للمستخدم**
+                    }
                   }
                 },
                 child: Text('تسجيل'),
