@@ -14,28 +14,38 @@ class _HomeScreenState extends State<HomeScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Wallet? _wallet;
+  String? _fullName;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadWalletData();
+    _loadUserData();
   }
 
-  Future<void> _loadWalletData() async {
+  Future<void> _loadUserData() async {
     try {
       String userId = _auth.currentUser?.uid ?? '';
+
+      // تحميل بيانات المحفظة
       DocumentSnapshot walletDoc =
           await _firestore.collection('wallets').doc(userId).get();
 
-      if (walletDoc.exists) {
-        setState(() {
+      // تحميل بيانات المستخدم
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(userId).get();
+
+      setState(() {
+        if (walletDoc.exists) {
           _wallet = Wallet.fromJson(walletDoc.data() as Map<String, dynamic>);
-          _isLoading = false;
-        });
-      }
+        }
+        if (userDoc.exists) {
+          _fullName = userDoc.get('fullName') as String;
+        }
+        _isLoading = false;
+      });
     } catch (e) {
-      print('Error loading wallet data: $e');
+      print('Error loading user data: $e');
       setState(() {
         _isLoading = false;
       });
@@ -53,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () async {
               await _auth.signOut();
               if (mounted) {
-                Navigator.of(context).pushReplacementNamed('/login');
+                Navigator.of(context).pushReplacementNamed('/register');
               }
             },
           ),
@@ -74,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'مرحباً ${_auth.currentUser?.email ?? ""}',
+                            'مرحباً ${_fullName ?? ""}',
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(height: 8),
