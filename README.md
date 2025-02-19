@@ -94,7 +94,7 @@ lib/
 
 ## 👥 المطورون | Developers
 
-- [ Hussein El-Daramally] - مطور رئيسي
+- Hussein El-Daramally - مطور رئيسي
 
 ## 📞 التواصل | Contact
 
