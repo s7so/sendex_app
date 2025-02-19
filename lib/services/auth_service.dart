@@ -32,6 +32,14 @@ class AuthService {
             .doc(user.uid)
             .set(newWallet.toJson());
 
+        // حفظ بيانات المستخدم في Firestore
+        await _firestore.collection('users').doc(user.uid).set({
+          'fullName': fullName,
+          'email': email,
+          'phoneNumber': phoneNumber,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
         // 3. توليد رمز OTP عشوائي
         String otpCode = generateOtp();
 
