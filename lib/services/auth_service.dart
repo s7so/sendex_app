@@ -33,7 +33,14 @@ class AuthService {
             .set(newWallet.toJson());
 
         // 3. توليد رمز OTP عشوائي
-        String otpCode = generateOtp(); // دالة توليد OTP (هنعملها تحت)
+        String otpCode = generateOtp();
+
+        // حفظ الـ OTP في Firestore مع timestamp
+        await _firestore.collection('otps').doc(user.uid).set({
+          'code': otpCode,
+          'createdAt': FieldValue.serverTimestamp(),
+          'verified': false,
+        });
 
         // 4. إرسال رمز OTP عبر WhatsApp باستخدام WhatsappService
         bool isOtpSent = await _whatsappService.sendWhatsappOtp(
@@ -41,23 +48,20 @@ class AuthService {
 
         if (isOtpSent) {
           print('تم إرسال رمز OTP عبر WhatsApp بنجاح إلى رقم: $phoneNumber');
-          return user; // إرجاع المستخدم في حالة النجاح وإرسال OTP
+          return user;
         } else {
           print('فشل إرسال رمز OTP عبر WhatsApp إلى رقم: $phoneNumber');
-          // **ممكن هنا تقرر إيه اللي يحصل لو فشل إرسال OTP، هل تفشل عملية التسجيل كلها؟ أو تكمل التسجيل من غير OTP؟**
-          // في الاختبار ده، ممكن نكمل التسجيل حتى لو فشل إرسال OTP، ونعتبر إن التسجيل تم بنجاح جزئياً.
-          return user; // إرجاع المستخدم حتى لو فشل إرسال OTP (اعتبر التسجيل ناجح جزئياً)
+          return user;
         }
-      } else {
-        return null; // إرجاع null في حالة فشل إنشاء المستخدم
       }
+      return null;
     } catch (e) {
       print("Error during registration: $e");
-      return null; // إرجاع null في حالة حدوث خطأ عام
+      return null;
     }
   }
 
-// دالة لتوليد رمز OTP عشوائي (مكون من 6 أرقام)
+  // دالة لتوليد رمز OTP عشوائي (مكون من 6 أرقام)
   String generateOtp() {
     final random = Random();
     String otp = '';
@@ -65,5 +69,21 @@ class AuthService {
       otp += random.nextInt(10).toString(); // أرقام من 0 إلى 9
     }
     return otp;
+  }
+
+  // دالة للتحقق من OTP وتحديث حالة التحقق للمستخدم
+  Future<bool> verifyUserOtp(String userId) async {
+    try {
+      // تحديث حالة التحقق في Firestore
+      await _firestore.collection('otps').doc(userId).update({
+        'verified': true,
+        'verifiedAt': FieldValue.serverTimestamp(),
+      });
+
+      return true;
+    } catch (e) {
+      print("Error during OTP verification: $e");
+      return false;
+    }
   }
 }

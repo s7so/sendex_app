@@ -20,7 +20,7 @@ class WhatsappService {
       "to": recipientPhoneNumber,
       "message_type": "text",
       "text":
-          "This is a WhatsApp Message sent from the Messages API", // Updated to match example message
+          "Your Sendex verification code is: $otpCode. Please enter this code in the app to verify your account.",
       "channel": "whatsapp"
     };
 
