@@ -7,7 +7,8 @@ class WhatsappService {
   final String apiSecret = 'mKSdrcbfNAcqHo3v';
 
   // Vonage WhatsApp number
-  final String vonageWhatsappNumber = '+14157386102';
+  final String vonageWhatsappNumber =
+      '14157386102'; // Removed + prefix to match API format
 
   Future<bool> sendWhatsappOtp(
       {required String recipientPhoneNumber, required String otpCode}) async {
@@ -18,27 +19,22 @@ class WhatsappService {
       "from": vonageWhatsappNumber,
       "to": recipientPhoneNumber,
       "message_type": "text",
-      "text": 'رمز التحقق الخاص بك هو: $otpCode',
+      "text":
+          "This is a WhatsApp Message sent from the Messages API", // Updated to match example message
       "channel": "whatsapp"
     };
 
-    // Convert request body to JSON
-    final String jsonBody = jsonEncode(requestBody);
-
-    // Create Basic Auth header
-    final String basicAuth = 
-        'Basic ' + base64Encode(utf8.encode('$apiKey:$apiSecret'));
-
     try {
-      // Make POST request to Vonage API
+      // Make POST request to Vonage API using basic auth
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': basicAuth,
+          'Authorization':
+              'Basic ${base64Encode(utf8.encode('$apiKey:$apiSecret'))}'
         },
-        body: jsonBody,
+        body: jsonEncode(requestBody),
       );
 
       // Handle response
