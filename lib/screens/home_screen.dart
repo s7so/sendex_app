@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               Text(
-                                '${_wallet?.balance.toStringAsFixed(2) ?? "0.00"} ريال',
+                                '${_wallet?.balance.toStringAsFixed(2) ?? "0.00"} جنيه ',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge
