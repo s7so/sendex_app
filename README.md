@@ -100,7 +100,7 @@ lib/
 
 للاستفسارات والدعم الفني:
 - البريد الإلكتروني: graphiceldaramally@gmail.com
-- تويتر: [@s7so](https://twitter.com/s7so)
+- تويتر: [@s7socoding](https://twitter.com/s7socoding)
 
 ---
 
